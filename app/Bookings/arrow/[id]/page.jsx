@@ -18,6 +18,8 @@ const Page = () => {
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [selectedCab, setSelectedCab] = useState(null);
 
+  const [modalCancel, setModalCancel] = useState(false);
+
   // Get vendor details from localStorage
   const vendor = JSON.parse(localStorage.getItem("vendor"));
 
@@ -54,6 +56,26 @@ const Page = () => {
   } else {
     console.error("booking is undefined or null");
   }
+
+  const createPenalty = async () => {
+    try {
+      if (!params.id || !vendorId) {
+        alert("Booking ID or Vendor ID is missing!");
+        return;
+      }
+
+      await axios.post(
+        `http://localhost:8080/penalty/${params.id}/${vendorId}`
+      );
+
+      setModalCancel(false);
+      alert("Penalty applied successfully!");
+    } catch (error) {
+      console.error("Error applying penalty:", error);
+      alert(error.response?.data?.message || "Failed to apply penalty!");
+      console.log(response.data);
+    }
+  };
 
   // Fetch drivers when booking is loaded (or vendorId changes)
   useEffect(() => {
@@ -362,7 +384,8 @@ const Page = () => {
 
             {booking.status !== 1 && (
               <button
-                onClick={() => handleUpdateStatus(2)}
+                // onClick={() => handleUpdateStatus(3)}
+                onClick={() => setModalCancel(true)}
                 className="h-8 px-4 bg-red-600 text-white rounded-lg shadow-md transition"
               >
                 Cancel Booking
@@ -385,6 +408,72 @@ const Page = () => {
           )}
         </div>
       </div>
+
+      {modalCancel && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-semibold mb-4">Cancel Booking</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Select a reason for cancellation:
+            </p>
+
+            {/* Radio Buttons for Cancellation Reasons */}
+            <div className="space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="cancelReason"
+                  value="Booking Change"
+                  className="form-radio"
+                />
+                <span>Booking Change</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="cancelReason"
+                  value="Pickup Late"
+                  className="form-radio"
+                />
+                <span>Pickup Late</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="cancelReason"
+                  value="Cab Change"
+                  className="form-radio"
+                />
+                <span>Cab Change</span>
+              </label>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-end mt-4 space-x-2">
+              <button
+                onClick={() => setModalCancel(false)}
+                className="px-4 py-2 bg-gray-400 text-white rounded"
+              >
+                Close
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    await createPenalty();
+                    // If we get here, it was successful
+                    handleUpdateStatus(3); // Update status to cancelled
+                  } catch (error) {
+                    // Error is already handled in createPenalty
+                  }
+                }}
+                className="px-4 py-2 bg-red-500 text-white rounded"
+              >
+                Confirm Cancellation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isDriverModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
