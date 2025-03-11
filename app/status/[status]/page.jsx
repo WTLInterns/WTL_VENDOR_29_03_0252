@@ -18,7 +18,7 @@ const Page = () => {
 
   const router = useRouter();
 
-  const vendor = JSON.parse(localStorage.getItem("vendor"));
+  const vendor = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null;
 
   if (!vendor) {
     console.error("Vendor not found in localStorage");

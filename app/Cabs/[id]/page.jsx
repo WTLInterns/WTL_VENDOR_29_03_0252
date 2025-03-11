@@ -6,7 +6,7 @@ import React from "react";
 import axios from "axios"; // Import axios
 
 const Drivers = () => {
-  const vendor = JSON.parse(localStorage.getItem("vendor"));
+  const vendor = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null;
 
   if (!vendor) {
     console.error("Vendor not found in localStorage");

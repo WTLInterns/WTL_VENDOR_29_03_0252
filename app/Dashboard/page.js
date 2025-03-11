@@ -1,37 +1,62 @@
-
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, BarChart, Bar } from "recharts";
 import { IndianRupee, Car, CalendarCheck, Users } from "lucide-react"; 
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import axios from "axios";
 
 const Dashboard = () => {
+  const [bookings, setBookings] = useState([]);
+
+  const vendor = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null;
+
+  if (!vendor) {
+    console.error("Vendor not found in localStorage");
+  }
+
+  const vendorId = vendor ? vendor.vendorId : null;
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/${vendorId}/vendorByBookings`
+        );
+        setBookings(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchBookings();
+  }, []);
+
+  // Calculate Total Revenue
+  const totalRevenue = bookings.reduce((sum, booking) => sum + (booking.amount || 0), 0);
+
+  // Booking Status Counts
+  const statusCounts = {
+    pending: 0,
+    ongoing: 0,
+    completed: 0,
+    cancelled: 0,
+  };
+
+  bookings.forEach((booking) => {
+    if (booking.status === 0) statusCounts.pending++;
+    else if (booking.status === 1) statusCounts.ongoing++;
+    else if (booking.status === 2) statusCounts.completed++;
+    else if (booking.status === 3) statusCounts.cancelled++;
+  });
+
+  // Dynamic Pie Chart Data
   const dataPie = [
-    { name: "Desktop visit", value: 40, color: "#8884d8" },
-    { name: "Tab visits", value: 30, color: "#FF4D4F" },
-    { name: "Mobile visits", value: 30, color: "#4CAF50" },
-  ];
-
-  const dataLine = [
-    { name: "Jan", value: 10 },
-    { name: "Feb", value: 25 },
-    { name: "Mar", value: 18 },
-    { name: "Apr", value: 30 },
-    { name: "May", value: 22 },
-    { name: "Jun", value: 28 },
-    { name: "Jul", value: 35 },
-  ];
-
-  const dataBar = [
-    { name: "A", value: 15 },
-    { name: "B", value: 25 },
-    { name: "C", value: 10 },
-    { name: "D", value: 30 },
-    { name: "E", value: 20 },
-    { name: "F", value: 25 },
-    { name: "G", value: 18 },
-  ];
+    { name: "Pending", value: statusCounts.pending, color: "#FFC107" }, // Yellow
+    { name: "Ongoing", value: statusCounts.ongoing, color: "#007BFF" }, // Blue
+    { name: "Completed", value: statusCounts.completed, color: "#28A745" }, // Green
+    { name: "Cancelled", value: statusCounts.cancelled, color: "#DC3545" }, // Red
+  ].filter((entry) => entry.value > 0); // Remove categories with zero value
 
   return (
     <div className="flex">
@@ -42,38 +67,34 @@ const Dashboard = () => {
           
           {/* Top Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Prices */}
             <div className="bg-white shadow-lg p-6 rounded-lg flex items-center">
               <IndianRupee className="w-10 h-10 text-green-500 mr-4" />
               <div>
-                <p className="text-xl font-bold">₹ 0 /-</p>
-                <p className="text-gray-500">Prices</p>
+                <p className="text-xl font-bold">₹ {totalRevenue} /-</p>
+                <p className="text-gray-500">Total Revenue</p>
               </div>
             </div>
 
-            {/* All Trips */}
             <div className="bg-white shadow-lg p-6 rounded-lg flex items-center">
               <Car className="w-10 h-10 text-blue-500 mr-4" />
               <div>
-                <p className="text-xl font-bold">0</p>
-                <p className="text-gray-500">All Trips</p>
+                <p className="text-xl font-bold">{bookings.length}</p>
+                <p className="text-gray-500">Total Trips</p>
               </div>
             </div>
 
-            {/* All Booking Details */}
             <div className="bg-white shadow-lg p-6 rounded-lg flex items-center">
               <CalendarCheck className="w-10 h-10 text-yellow-500 mr-4" />
               <div>
-                <p className="text-xl font-bold">0</p>
+                <p className="text-xl font-bold">{bookings.length}</p>
                 <p className="text-gray-500">All Booking Details</p>
               </div>
             </div>
 
-            {/* Clients */}
             <div className="bg-white shadow-lg p-6 rounded-lg flex items-center">
               <Users className="w-10 h-10 text-purple-500 mr-4" />
               <div>
-                <p className="text-xl font-bold">0</p>
+                <p className="text-xl font-bold">{bookings.length}</p>
                 <p className="text-gray-500">Clients</p>
               </div>
             </div>
@@ -82,44 +103,18 @@ const Dashboard = () => {
           {/* Graphs Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             
-            {/* Pie Chart */}
+            {/* Dynamic Pie Chart */}
             <div className="bg-white shadow-lg p-6 rounded-lg">
-              <h3 className="text-center text-lg font-semibold mb-2">Visitor Statistics</h3>
-              <ResponsiveContainer width="100%" height={200}>
+              <h3 className="text-center text-lg font-semibold mb-2">Booking Status</h3>
+              <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
-                  <Pie data={dataPie} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={50}>
+                  <Pie data={dataPie} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
                     {dataPie.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
                   <Legend />
                 </PieChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Line Chart */}
-            <div className="bg-blue-500 text-white shadow-lg p-6 rounded-lg">
-              <h2 className="text-lg font-bold mb-4">Sales Growth</h2>
-              <ResponsiveContainer width="100%" height={150}>
-                <LineChart data={dataLine}>
-                  <XAxis dataKey="name" stroke="#FFF" />
-                  <YAxis stroke="#FFF" />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="value" stroke="#FFF" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Bar Chart */}
-            <div className="bg-white shadow-lg p-6 rounded-lg">
-              <h3 className="text-center text-lg font-semibold mb-2">Performance Metrics</h3>
-              <ResponsiveContainer width="100%" height={150}>
-                <BarChart data={dataBar}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#8A4DFF" />
-                </BarChart>
               </ResponsiveContainer>
             </div>
 

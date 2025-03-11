@@ -27,7 +27,7 @@ const Cabs = () => {
     cabSideImage: null,
   });
 
-  const vendor = JSON.parse(localStorage.getItem("vendor"));
+  const vendor = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null;
 
   // Ensure vendor data exists in localStorage before proceeding
   if (!vendor) {

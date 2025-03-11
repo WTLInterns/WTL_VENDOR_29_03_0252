@@ -12,7 +12,7 @@ import {
 const Sidebar = () => {
   const router = useRouter();
 
-  const vendor = JSON.parse(localStorage.getItem("vendor"));
+  const vendor = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null;
 
   // Extract email and vendorId from the parsed object
   const email = vendor ? vendor.email : null;
