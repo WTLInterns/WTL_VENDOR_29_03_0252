@@ -442,7 +442,7 @@ const Page = () => {
                   }).then((result) => {
                     if (result.isConfirmed) {
                       createPenalty(); // Apply fixed penalty of 2000
-                      handleUpdateStatus1(3); // Assuming 3 is the status for cancelled
+                      handleUpdateStatus1(5); // Assuming 3 is the status for cancelled
                     }
                   });
                 }}

@@ -71,13 +71,13 @@ const Drivers = () => {
       return;
     }
 
-    const altContactNoRegex = /^[6-9]\d{9}$/;
+    const altContactNoRegex = /^[0-9]\d{10}$/;
     if (!altContactNoRegex.test(formData.altContactNo)) {
       alert("Contact no shoulde be greater than 9");
       return;
     }
 
-    const contactNoRegex = /^[6-9]\d{9}$/;
+    const contactNoRegex = /^[0-9]\d{10}$/;
     if (!contactNoRegex.test(formData.contactNo)) {
       alert("Alternate Contact no shoulde be greater than 9");
 
@@ -254,6 +254,21 @@ const Drivers = () => {
                     />
                   </div>
 
+                  <div className="flex flex-col md:flex-row items-center mt-4">
+                    <label className="w-full md:w-1/3 mb-2 md:mb-0">
+                     Email Id
+                    </label>
+                    <input
+                      type="text"
+                      name="emailId"
+                      value={formData.emailId}
+                      onChange={handleInputChange}
+                      className="border p-2 w-full md:w-2/3 rounded-md"
+                      placeholder="Enter Email Id"
+                      required
+                    />
+                  </div>
+
                   {/* Address */}
                   <div className="flex flex-col md:flex-row items-center mt-4">
                     <label className="w-full md:w-1/3 mb-2 md:mb-0">
@@ -317,7 +332,7 @@ const Drivers = () => {
                   {/* PVC Number */}
                   <div className="flex flex-col md:flex-row items-center mt-4">
                     <label className="w-full md:w-1/3 mb-2 md:mb-0">
-                      PVC Number
+                      PUC Number
                     </label>
                     <input
                       type="text"

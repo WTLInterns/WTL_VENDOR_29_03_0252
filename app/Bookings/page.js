@@ -62,7 +62,7 @@ const page = () => {
     if (tripTypeFilter === "all") return true;
     if (tripTypeFilter === "one-way" && booking.tripType === "oneWay")
       return true;
-    if (tripTypeFilter === "round-trip" && booking.tripType === "Round Trip")
+    if (tripTypeFilter === "roundTrip" && booking.tripType === "roundTrip")
       return true;
     return false;
   });
@@ -102,7 +102,7 @@ const page = () => {
               >
                 <option value="all">All Trip Types</option>
                 <option value="one-way">One-way Trip</option>
-                <option value="round-trip">Round-trip</option>
+                <option value="roundTrip">Round-trip</option>
               </select>
             </div>
             <div>
@@ -228,6 +228,10 @@ const page = () => {
                       case 3:
                         statusColor = "bg-red-400 text-red-800";
                         statusText = "Cancelled";
+                        break;
+                        case 5:
+                        statusColor = "bg-gray-400 text-gray-800";
+                        statusText = "Reassign";
                         break;
                       default:
                         statusColor = "bg-gray-300 text-gray-800";
