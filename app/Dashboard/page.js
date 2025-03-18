@@ -33,7 +33,13 @@ const Dashboard = () => {
   }, []);
 
   // Calculate Total Revenue
-  const totalRevenue = bookings.reduce((sum, booking) => sum + (booking.amount || 0), 0);
+  // const totalRevenue = bookings.reduce((sum, booking) => sum + (booking.amount || 0), 0);
+  const totalRevenue = bookings.reduce((sum, booking) => {
+    if (booking.status === 2) {
+      return sum + (booking.amount || 0);
+    }
+    return sum;
+  }, 0);
 
   // Booking Status Counts
   const statusCounts = {
@@ -41,13 +47,14 @@ const Dashboard = () => {
     ongoing: 0,
     completed: 0,
     cancelled: 0,
+    
   };
 
   bookings.forEach((booking) => {
     if (booking.status === 0) statusCounts.pending++;
     else if (booking.status === 1) statusCounts.ongoing++;
     else if (booking.status === 2) statusCounts.completed++;
-    else if (booking.status === 3) statusCounts.cancelled++;
+    else if (booking.status === 3 || 5) statusCounts.cancelled++;
   });
 
   // Dynamic Pie Chart Data

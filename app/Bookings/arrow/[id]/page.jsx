@@ -18,9 +18,13 @@ const Page = () => {
   const [cabs, setCabs] = useState([]);
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [selectedCab, setSelectedCab] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   // Get vendor details from localStorage
-  const vendor = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null;
+  const vendor =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("vendor"))
+      : null;
 
   if (!vendor) {
     console.error("Vendor not found in localStorage");
@@ -33,22 +37,23 @@ const Page = () => {
   console.log("Vendor:", vendor);
 
   // Fetch booking details by ID (using params.id as dependency)
-  useEffect(() => {
-    const fetchBooking = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/booking/${params.id}`
-        );
-        setBooking(response.data);
-      } catch (error) {
-        console.error("Error fetching booking:", error);
-      }
-    };
-
-    if (params.id) {
-      fetchBooking();
+  const fetchBooking = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/booking/${params.id}`
+      );
+      setBooking(response.data);
+    } catch (error) {
+      console.error("Error fetching booking:", error);
     }
-  }, [params.id]);
+  };
+
+  // Use useEffect to call the function when params.id changes
+  // useEffect(() => {
+  //   if (params.id) {
+  //     fetchBooking();
+  //   }
+  // }, [params.id]);
 
   // Fetch drivers when booking is loaded (or vendorId changes)
   useEffect(() => {
@@ -137,6 +142,7 @@ const Page = () => {
         `http://localhost:8080/${params.id}/assignVendorDriver/${vendorDriverId}`
       );
       alert("Driver assigned successfully:", response.data);
+      fetchBooking();
     } catch (error) {
       console.error("Error assigning driver:", error);
     }
@@ -149,16 +155,24 @@ const Page = () => {
         `http://localhost:8080/${params.id}/assignVendorCab/${vendorCabId}`
       );
       alert("Cab assigned successfully:", response.data);
+      fetchBooking();
     } catch (error) {
       console.error("Error assigning cab:", error);
     }
   };
 
+  useEffect(() => {
+    if (params.id) {
+      fetchBooking();
+    }
+  }, [params.id]);
+
   const createPenalty = async () => {
+    setIsLoading(true); // Start loading
     try {
       await axios.post(
         `http://localhost:8080/penalty/${params.id}/${vendorId}`,
-        { amount: 2000, time:`${currentTime}` }, // Fixed amount of 2000
+        { amount: 2000, time: `${currentTime}` }, // Fixed amount of 2000
         { headers: { "Content-Type": "application/json" } }
       );
 
@@ -166,6 +180,8 @@ const Page = () => {
     } catch (error) {
       console.error("Error occurred", error);
       Swal.fire("Error", "Failed to cancel booking.", "error");
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -193,31 +209,47 @@ const Page = () => {
   const isBookingDateToday = booking?.startDate === currentDate;
 
   let cancellationMessage = "";
+  let isCancelButtonDisabled = false;
+  let timeDifferenceMinutes = 0;
 
   if (!booking) {
     cancellationMessage = "No booking found.";
   } else {
-    // If booking is today, check the time difference
-    const [bookingHours, bookingMinutes] = booking.time.split(":").map(Number);
-    const [currentHours, currentMinutes] = currentTime.split(":").map(Number);
+    if (isBookingDateToday) {
+      // If booking is today, check the time difference
+      const [bookingHours, bookingMinutes] = booking.time
+        .split(":")
+        .map(Number);
+      const [currentHours, currentMinutes] = currentTime.split(":").map(Number);
 
-    // Convert both times to minutes for easier comparison
-    const bookingTotalMinutes = bookingHours * 60 + bookingMinutes;
-    const currentTotalMinutes = currentHours * 60 + currentMinutes;
+      // Convert both times to minutes for easier comparison
+      const bookingTotalMinutes = bookingHours * 60 + bookingMinutes;
+      const currentTotalMinutes = currentHours * 60 + currentMinutes;
 
-    // Calculate time difference in minutes
-    const timeDifferenceMinutes = bookingTotalMinutes - currentTotalMinutes;
+      // Calculate time difference in minutes
+      timeDifferenceMinutes = bookingTotalMinutes - currentTotalMinutes;
 
-    console.log("Time difference in minutes:", timeDifferenceMinutes);
+      console.log("Time difference in minutes:", timeDifferenceMinutes);
 
-    // Check if cancellation is less than 1 hour before booking time
-    if (timeDifferenceMinutes < 60 && timeDifferenceMinutes > 0) {
-      cancellationMessage =
-        "Penalty applies: You are able to cancel the booking, but you have to pay a cancellation fine of 2000.";
-    } else if (timeDifferenceMinutes <= 0) {
-      cancellationMessage =
-        "Your booking time has already passed or is currently in progress.";
+      if (timeDifferenceMinutes < 60 && timeDifferenceMinutes > 0) {
+        // Less than 1 hour before booking time
+        cancellationMessage =
+          "Penalty applies: You are able to cancel the booking, but you have to pay a cancellation fine of 2000.";
+      } else if (timeDifferenceMinutes <= 0) {
+        // Booking time has passed or is in progress
+        cancellationMessage = "Trip is complete, you can't cancel.";
+        isCancelButtonDisabled = true; // Disable the cancel button
+      } else {
+        // More than 1 hour before booking time
+        cancellationMessage =
+          "Cancel is applicable: You are able to cancel the booking without penalty.";
+      }
+    } else if (booking.startDate < currentDate) {
+      // Booking is in the past
+      cancellationMessage = "Trip is complete, you can't cancel.";
+      isCancelButtonDisabled = true; // Disable the cancel button
     } else {
+      // Booking is in the future
       cancellationMessage =
         "Cancel is applicable: You are able to cancel the booking without penalty.";
     }
@@ -230,13 +262,12 @@ const Page = () => {
         toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
       />
       <div
-        className={`flex-1 flex flex-col transition-all ${
-          isSidebarOpen ? "ml-64" : "ml-16"
-        }`}
+        className={`flex-1 flex flex-col transition-all ${isSidebarOpen ? "ml-64" : "ml-16"
+          }`}
       >
         <Navbar toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
 
-        <div className="p-6 mt-20">
+        <div className="p-6 mt-12">
           <h1 className="bg-gray-100 shadow-md p-6 rounded-lg">
             <b>Booking Details</b>
           </h1>
@@ -245,12 +276,11 @@ const Page = () => {
             <div className="relative inline-block">
               <button
                 onClick={() => setIsDriverModalOpen(true)}
-                className={`h-8 px-4 mr-2 rounded-lg shadow-md transition relative left-[273px] 
-    ${
-      booking.vendorDriver?.id
-        ? "bg-gray-400 cursor-not-allowed"
-        : "bg-blue-600 text-white"
-    }`}
+                className={`h-8 px-4 mr-2 rounded-lg shadow-md transition relative left-[350px] 
+                ${booking.vendorDriver?.id
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 text-white"
+                  }`}
                 disabled={!!booking.vendorDriver?.id}
                 title={
                   booking.vendorDriver?.id ? "Driver is already assigned" : ""
@@ -261,12 +291,11 @@ const Page = () => {
 
               <button
                 onClick={() => setIsCabModalOpen(true)}
-                className={`h-8 px-4 rounded-lg shadow-md transition relative left-[54vh] 
-    ${
-      booking.vendorCab?.id
-        ? "bg-gray-400 cursor-not-allowed"
-        : "bg-red-600 text-white"
-    }`}
+                className={`h-8 px-4 rounded-lg shadow-md transition relative left-[68vh] 
+              ${booking.vendorCab?.id
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-red-600 text-white"
+                  }`}
                 disabled={!!booking.vendorCab?.id}
                 title={booking.vendorCab?.id ? "Cab is already assigned" : ""}
               >
@@ -275,13 +304,13 @@ const Page = () => {
 
               <div className="flex space-x-8">
                 <div className="w-1/3">
-                  <table className="border-collapse border border-gray-300">
+                  <table className="border-collapse border border-gray-300 mt-10">
                     <tbody>
                       <tr>
                         <td className="py-2 px-4 border font-semibold">
                           Booking Id
                         </td>
-                        <td className="py-2 px-4 border">{booking.id}</td>
+                        <td className="py-2 px-4 border">{booking.bookingId}</td>
                       </tr>
                       <tr>
                         <td className="py-2 px-4 border font-semibold">Name</td>
@@ -317,7 +346,11 @@ const Page = () => {
                         <td className="py-2 px-4 border font-semibold">
                           Trip Type
                         </td>
-                        <td className="py-2 px-4 border">{booking.tripType}</td>
+                        <td className="py-2 px-4 border">{booking.tripType
+    ? booking.tripType
+        .replace(/[- ]/g, "") // Remove hyphens and spaces
+        .replace(/^./, (match) => match.toUpperCase()) // Capitalize the first letter
+    : ""}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -326,7 +359,7 @@ const Page = () => {
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold">Assigned Driver</h3>
                   {booking.vendorDriver ? (
-                    <table className="border-collapse border border-gray-300 w-full">
+                    <table className="border-collapse border border-gray-300 w-full mt-3">
                       <tbody>
                         <tr>
                           <td className="py-2 px-4 border font-semibold">
@@ -362,7 +395,7 @@ const Page = () => {
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold">Assigned Cab</h3>
                   {booking.vendorCab ? (
-                    <table className="border-collapse border border-gray-300 w-full">
+                    <table className="border-collapse border border-gray-300 w-full mt-3">
                       <tbody>
                         <tr>
                           <td className="py-2 px-4 border font-semibold">
@@ -420,7 +453,7 @@ const Page = () => {
             <button className="h-8 px-4 bg-gray-600 text-white rounded-lg shadow-md transition">
               Show Detail
             </button>
-            {booking.status !== 2 && (
+            {booking.status !== 2 && booking.status !== 5 && (
               <button
                 onClick={() => handleUpdateStatus(2)}
                 className="h-8 px-4 bg-blue-600 text-white rounded-lg shadow-md transition"
@@ -433,20 +466,22 @@ const Page = () => {
               <button
                 onClick={() => {
                   Swal.fire({
-                    title: 'Cancel Booking',
+                    title: "Cancel Booking",
                     text: cancellationMessage,
-                    icon: 'warning',
+                    icon: "warning",
                     showCancelButton: true,
-                    confirmButtonText: 'Yes, cancel it!',
-                    cancelButtonText: 'No, keep it',
+                    confirmButtonText: "Yes, cancel it!",
+                    cancelButtonText: "No, keep it",
                   }).then((result) => {
                     if (result.isConfirmed) {
                       createPenalty(); // Apply fixed penalty of 2000
-                      handleUpdateStatus1(5); // Assuming 3 is the status for cancelled
+                      handleUpdateStatus1(5); // Assuming 5 is the status for cancelled
                     }
                   });
                 }}
-                className="h-8 px-4 bg-red-600 text-white rounded-lg shadow-md transition"
+                className={`h-8 px-4 bg-red-600 text-white rounded-lg shadow-md transition ${isCancelButtonDisabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                disabled={isCancelButtonDisabled}
               >
                 Cancel Booking
               </button>
@@ -469,6 +504,224 @@ const Page = () => {
         </div>
       </div>
 
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="flex flex-col items-center">
+              {/* Car Loader SVG Animation */}
+              <svg
+                width="200"
+                height="100"
+                viewBox="0 0 200 100"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <style>
+                  {`
+                @keyframes drive {
+                  from { transform: translateX(-50%); }
+                  to { transform: translateX(150%); }
+                }
+                @keyframes wheelRotate {
+                  from { transform: rotate(0deg); }
+                  to { transform: rotate(360deg); }
+                }
+                @keyframes blink {
+                  0%, 100% { opacity: 0.5; }
+                  50% { opacity: 1; }
+                }
+                @keyframes fadeInOut {
+                  0%, 100% { opacity: 0; }
+                  50% { opacity: 1; }
+                }
+                .car {
+                  animation: drive 3s linear infinite;
+                }
+                .wheel {
+                  animation: wheelRotate 1s linear infinite;
+                  transform-origin: center;
+                }
+                .headlight {
+                  animation: blink 1s ease-in-out infinite;
+                }
+                .motion-line {
+                  animation: fadeInOut 1.5s ease-in-out infinite;
+                }
+                .motion-line:nth-child(2) {
+                  animation-delay: 0.2s;
+                }
+                .motion-line:nth-child(3) {
+                  animation-delay: 0.4s;
+                }
+                .motion-line:nth-child(4) {
+                  animation-delay: 0.6s;
+                }
+              `}
+                </style>
+
+                {/* Road */}
+                <rect x="0" y="85" width="200" height="5" fill="#333" />
+
+                {/* Car Group with Animation */}
+                <g className="car">
+                  {/* Motion Lines */}
+                  <g>
+                    <rect
+                      className="motion-line"
+                      x="0"
+                      y="40"
+                      width="30"
+                      height="4"
+                      rx="2"
+                      fill="#000"
+                    />
+                    <rect
+                      className="motion-line"
+                      x="5"
+                      y="50"
+                      width="20"
+                      height="4"
+                      rx="2"
+                      fill="#000"
+                    />
+                    <rect
+                      className="motion-line"
+                      x="2"
+                      y="60"
+                      width="25"
+                      height="4"
+                      rx="2"
+                      fill="#000"
+                    />
+                    <rect
+                      className="motion-line"
+                      x="10"
+                      y="70"
+                      width="15"
+                      height="4"
+                      rx="2"
+                      fill="#000"
+                    />
+                  </g>
+
+                  {/* Car Body */}
+                  <path
+                    d="M10 80 L10 60 C10 53 16 50 20 50 L50 50 C60 50 63 53 65 55 L80 55 C85 55 90 60 90 65 L90 80 Z"
+                    fill="#6366f1"
+                    stroke="#000"
+                    strokeWidth="3"
+                  />
+
+                  {/* Car Roof */}
+                  <path
+                    d="M20 50 L25 30 L55 30 L60 50"
+                    fill="#000"
+                    stroke="#000"
+                    strokeWidth="3"
+                  />
+
+                  {/* Windows */}
+                  <path
+                    d="M25 30 L28 50 L40 50 L40 30 Z"
+                    fill="#7dd3fc"
+                    stroke="#000"
+                    strokeWidth="1.5"
+                  />
+                  <path
+                    d="M40 30 L40 50 L50 50 L53 30 Z"
+                    fill="#7dd3fc"
+                    stroke="#000"
+                    strokeWidth="1.5"
+                  />
+
+                  {/* Car Door */}
+                  <line
+                    x1="40"
+                    y1="50"
+                    x2="40"
+                    y2="80"
+                    stroke="#000"
+                    strokeWidth="1.5"
+                  />
+                  <rect
+                    x="25"
+                    y="60"
+                    width="6"
+                    height="3"
+                    rx="1.5"
+                    fill="#000"
+                  />
+                  <rect
+                    x="45"
+                    y="60"
+                    width="6"
+                    height="3"
+                    rx="1.5"
+                    fill="#000"
+                  />
+
+                  {/* Wheels with Animation */}
+                  <g transform="translate(25, 80)">
+                    <circle
+                      className="wheel"
+                      cx="0"
+                      cy="0"
+                      r="10"
+                      fill="#4b5563"
+                      stroke="#000"
+                      strokeWidth="3"
+                    />
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="3"
+                      fill="#e5e7eb"
+                      stroke="#000"
+                      strokeWidth="1"
+                    />
+                  </g>
+
+                  <g transform="translate(75, 80)">
+                    <circle
+                      className="wheel"
+                      cx="0"
+                      cy="0"
+                      r="10"
+                      fill="#4b5563"
+                      stroke="#000"
+                      strokeWidth="3"
+                    />
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="3"
+                      fill="#e5e7eb"
+                      stroke="#000"
+                      strokeWidth="1"
+                    />
+                  </g>
+
+                  {/* Bumpers */}
+                  <rect x="8" y="80" width="84" height="4" rx="2" fill="#000" />
+
+                  {/* Headlight */}
+                  <rect
+                    className="headlight"
+                    x="90"
+                    y="65"
+                    width="5"
+                    height="5"
+                    rx="1"
+                    fill="#7dd3fc"
+                  />
+                </g>
+              </svg>
+              <p className="mt-4 text-lg font-semibold">
+                Cancelling Booking...
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       {isDriverModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white w-1/3 p-6 rounded-lg shadow-lg">

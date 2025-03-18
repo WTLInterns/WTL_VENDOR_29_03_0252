@@ -242,7 +242,7 @@ const page = () => {
                     return (
                       <tr key={index} className="border border-gray-300">
                         <td className="p-3 border border-gray-300">
-                          WTL{booking.id}
+                          {booking.bookingId}
                         </td>
                         <td className="p-3 border border-gray-300">
                           {booking.userPickup}
@@ -251,8 +251,11 @@ const page = () => {
                           {booking.userDrop}
                         </td>
                         <td className="p-3 border border-gray-300">
-                          {booking.tripType}
-                        </td>
+                        {booking.tripType
+    ? booking.tripType
+        .replace(/[- ]/g, "") // Remove hyphens and spaces
+        .replace(/^./, (match) => match.toUpperCase()) // Capitalize the first letter
+    : ""}                        </td>
                         <td className="p-3 border border-gray-300">
                           <span
                             className={`px-3 py-1 rounded-full text-sm font-semibold ${statusColor}`}

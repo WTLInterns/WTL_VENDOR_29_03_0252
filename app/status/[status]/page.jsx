@@ -32,7 +32,7 @@ const Page = () => {
     const fetchBookingsByStatus = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/getStatus/${params.status}/${vendorId}`
+          `http://localhost:8080/getStatus/${params.status}`
         );
         setBookings(response.data);
       } catch (error) {
@@ -43,7 +43,7 @@ const Page = () => {
     };
 
     fetchBookingsByStatus(); // Fetch bookings when component mounts
-  }, [status]); // Re-fetch when `status` changes
+  }, [params.status]); // Re-fetch when `status` changes
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -131,7 +131,11 @@ const Page = () => {
                           {booking.userDrop}
                         </td>
                         <td className="p-3 border border-gray-300">
-                          {booking.tripType}
+                        {booking.tripType
+    ? booking.tripType
+        .replace(/[- ]/g, "") // Remove hyphens and spaces
+        .replace(/^./, (match) => match.toUpperCase()) // Capitalize the first letter
+    : ""}
                         </td>
                         <td className="p-3 border border-gray-300">
                           <span
