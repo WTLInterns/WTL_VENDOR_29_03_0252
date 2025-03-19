@@ -88,7 +88,7 @@ const page = () => {
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
 
-      <div className="flex-1 flex flex-col overflow-hidden ml-64">
+      <div className="flex-1 flex flex-col overflow-hidden md:ml-64 lg:ml-64">
         <Navbar />
 
         <div className="flex-1 overflow-auto p-6 pt-20 bg-gray-100">

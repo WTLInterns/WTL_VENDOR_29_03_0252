@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useEffect, useState } from "react";
 import { FaArrowRight, FaTimes } from "react-icons/fa";
@@ -163,7 +164,7 @@ const Cabs = () => {
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 ml-64 bg-gray-100 min-h-screen">
+      <div className="flex-1 md:ml-64 lg:ml-64 bg-gray-100 min-h-screen">
         {/* Navbar */}
         <Navbar />
 
@@ -344,7 +345,7 @@ const Cabs = () => {
             <img
               src="https://imgd.aeplcdn.com/600x337/n/cw/ec/159099/swift-exterior-right-front-three-quarter.jpeg?isig=0&q=80"
               alt="Hatchback"
-              className="w-full h-32 object-cover mb-2 rounded-md"
+              className="w-full h-45  mb-2 rounded-md md:object-contain"
             />
             <h3 className="font-semibold text-lg">Hatchback</h3>
             <p className="text-sm text-gray-600">4+1 Seater</p>
@@ -355,7 +356,7 @@ const Cabs = () => {
             <img
               src="https://imgd.aeplcdn.com/600x337/n/cw/ec/127563/alto-k10-exterior-right-front-three-quarter-58.jpeg?isig=0&q=80"
               alt="Sedan"
-              className="w-full h-32 object-cover mb-2 rounded-md"
+              className="w-full h-45  mb-2 rounded-md md:object-contain"
             />
             <h3 className="font-semibold text-lg">Sedan</h3>
             <p className="text-sm text-gray-600">4+1 Seater</p>
@@ -366,7 +367,7 @@ const Cabs = () => {
             <img
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8l-ScnpWkIhxbxk_IbShOPh9opks7jOyLJQ&s"
               alt="SUV"
-              className="w-full h-32 object-cover mb-2 rounded-md"
+              className="w-full h-45  mb-2 rounded-md md:object-contain"
             />
             <h3 className="font-semibold text-lg">SUV</h3>
             <p className="text-sm text-gray-600">6+1 Seater</p>
@@ -377,7 +378,7 @@ const Cabs = () => {
             <img
               src="https://imgd-ct.aeplcdn.com/664x374/n/cw/ec/41160/tigor-exterior-right-front-three-quarter-21.jpeg?isig=0&q=80"
               alt="SUV+"
-              className="w-full h-32 object-cover mb-2 rounded-md"
+              className="w-full h-45  mb-2 rounded-md md:object-contain"
             />
             <h3 className="font-semibold text-lg">SUV+</h3>
             <p className="text-sm text-gray-600">6+1 Seater</p>
@@ -385,7 +386,7 @@ const Cabs = () => {
         </div>
 
         {/* Status Buttons */}
-        <div className="flex space-x-4 mt-6">
+        <div className="flex space-x-4 mt-6 relative sm:left-8 lg:left-8 ">
           <button className="bg-yellow-500 text-white px-4 py-2 rounded flex items-center shadow-sm">
             Pending{" "}
             <span className="ml-2 bg-white text-black px-2 py-0.5 rounded">

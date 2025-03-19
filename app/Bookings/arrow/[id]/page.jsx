@@ -23,6 +23,7 @@ export default function page() {
   const [selectedDriver, setSelectedDriver] = useState(null)
   const [selectedCab, setSelectedCab] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const[price,setPrice]=useState(0)
 
   // Get vendor details from localStorage
   const vendor = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null
@@ -170,7 +171,7 @@ export default function page() {
 
       await axios.post(
         `http://localhost:8080/penalty/${params.id}/${vendorId}`,
-        { amount: 2000, time: currentTime },
+        { amount: price, time: currentTime },
         { headers: { "Content-Type": "application/json" } },
       )
 
@@ -212,6 +213,7 @@ export default function page() {
 
   if (!booking) {
     cancellationMessage = "No booking found."
+    // price=0;
   } else {
     if (isBookingDateToday) {
       // If booking is today, check the time difference
@@ -229,6 +231,7 @@ export default function page() {
         // Less than 1 hour before booking time
         cancellationMessage =
           "Penalty applies: You are able to cancel the booking, but you have to pay a cancellation fine of 2000."
+          // price=2000;
       } else if (timeDifferenceMinutes <= 0) {
         // Booking time has passed or is in progress
         cancellationMessage = "Trip is complete, you can't cancel."
@@ -236,6 +239,7 @@ export default function page() {
       } else {
         // More than 1 hour before booking time
         cancellationMessage = "Cancel is applicable: You are able to cancel the booking without penalty."
+        // price=0;
       }
     } else if (booking.startDate < currentDate) {
       // Booking is in the past
@@ -244,6 +248,7 @@ export default function page() {
     } else {
       // Booking is in the future
       cancellationMessage = "Cancel is applicable: You are able to cancel the booking without penalty."
+      // price=0;
     }
   }
 
@@ -407,7 +412,7 @@ export default function page() {
                   </Button>
                 )}
 
-                {booking.status !== 3 && (
+                {booking.status !== 3  && (
                   <Button
                     onClick={() => {
                       Swal.fire({
@@ -425,8 +430,8 @@ export default function page() {
                       })
                     }}
                     className="bg-red-600 hover:bg-red-700"
-                    disabled={isCancelButtonDisabled}
-                  >
+                    disabled={isCancelButtonDisabled || booking.status === 5}
+                    >
                     <XCircle className="mr-2 h-4 w-4" />
                     Cancel Booking
                   </Button>

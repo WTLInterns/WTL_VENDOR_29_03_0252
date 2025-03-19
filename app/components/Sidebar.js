@@ -8,11 +8,19 @@ import {
   FaCreditCard,
   FaUser,
 } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, toggleSidebar }) => {
   const router = useRouter();
+  const [vendor, setVendor] = useState(null); // State to manage vendor data
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
-  const vendor = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null;
+  useEffect(() => {
+    // Access localStorage only on the client side
+    const vendorData = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null;
+    setVendor(vendorData);
+    setIsLoading(false); // Set loading to false after data is fetched
+  }, []);
 
   // Extract email and vendorId from the parsed object
   const email = vendor ? vendor.email : null;
@@ -20,8 +28,16 @@ const Sidebar = () => {
 
   console.log(email, vendorId);
 
+  if (isLoading) {
+    return <div>Loading...</div>; // Show a loading state while data is being fetched
+  }
+
   return (
-    <div className="w-64 h-screen bg-white shadow-lg fixed left-0 top-0 z-50 border-r">
+    <div
+      className={`w-64 h-screen bg-white shadow-lg fixed left-0 top-0 z-40 border-r transform transition-transform duration-300 ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      } md:translate-x-0`} // Hide sidebar on mobile by default, show on desktop
+    >
       <div className="px-6 py-5 text-gray-800 font-bold text-sm uppercase bg-gray-100 border-b">
         {email ? email : "FRONTENDRH@GMAIL.COM"}{" "}
         {/* Display email if available, else default email */}
