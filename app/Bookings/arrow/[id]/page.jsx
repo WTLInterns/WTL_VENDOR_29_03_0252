@@ -254,8 +254,8 @@ export default function page() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
-      <div className={`flex-1 flex flex-col transition-all ${isSidebarOpen ? "ml-64" : "ml-16"}`}>
+      {/* <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} /> */}
+      <div className={`flex-1 flex flex-col transition-all ${isSidebarOpen ? "" : ""}`}>
         <Navbar toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
 
         <div className="flex-1 overflow-auto p-6 pt-16">

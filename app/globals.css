@@ -66,3 +66,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+body {
+  background-color: white;
+  color: black;
+}
+
+/* Dark mode styles */
+.dark body {
+  background-color: black;
+  color: white;
+}

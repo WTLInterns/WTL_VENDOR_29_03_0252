@@ -1,13 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { PieChart, Pie, Cell, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, BarChart, Bar } from "recharts";
-import { IndianRupee, Car, CalendarCheck, Users } from "lucide-react"; 
+import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from "recharts";
+import { IndianRupee, Car, CalendarCheck, Users } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
   const [bookings, setBookings] = useState([]);
+  const [notification, setNotification] = useState(false);
+  const [todaysBookings, setTodaysBookings] = useState([]);
+
+  const router = useRouter();
 
   const vendor = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("vendor")) : null;
 
@@ -30,10 +35,9 @@ const Dashboard = () => {
     };
 
     fetchBookings();
-  }, []);
+  }, [vendorId]);
 
   // Calculate Total Revenue
-  // const totalRevenue = bookings.reduce((sum, booking) => sum + (booking.amount || 0), 0);
   const totalRevenue = bookings.reduce((sum, booking) => {
     if (booking.status === 2) {
       return sum + (booking.amount || 0);
@@ -47,7 +51,6 @@ const Dashboard = () => {
     ongoing: 0,
     completed: 0,
     cancelled: 0,
-    
   };
 
   bookings.forEach((booking) => {
@@ -65,13 +68,29 @@ const Dashboard = () => {
     { name: "Cancelled", value: statusCounts.cancelled, color: "#DC3545" }, // Red
   ].filter((entry) => entry.value > 0); // Remove categories with zero value
 
+  // Check for today's bookings when the component mounts
+  useEffect(() => {
+    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+    const todaysBookings = bookings.filter((booking) => booking.date === currentDate);
+
+    if (todaysBookings.length > 0) {
+      setTodaysBookings(todaysBookings);
+      setNotification(true);
+
+      // Play notification sound
+      const audio = new Audio("/img/notify-6-313751.mp3"); // Ensure the path is correct
+      audio.play().catch((error) => {
+        console.error("Failed to play sound:", error);
+      });
+    }
+  }, [bookings]); // Run only when bookings are fetched
+
   return (
     <div className="flex">
       <Sidebar />
       <div className="flex-1">
         <Navbar />
-        <div className="p-6 bg-gray-100">
-          
+        <div className="p-6">
           {/* Top Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white shadow-lg p-6 rounded-lg flex items-center">
@@ -107,9 +126,44 @@ const Dashboard = () => {
             </div>
           </div>
 
+          {/* Notification Modal */}
+          {notification && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 className="text-xl font-bold mb-4">Booking Reminder</h2>
+                <p className="text-gray-600 mb-4">
+                  You have {todaysBookings.length} booking(s) today:
+                </p>
+                <ul className="mb-4">
+                  {todaysBookings.map((booking) => (
+                    <li key={booking.bookingId} className="text-gray-700">
+                      Booking ID: {booking.bookingId}
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex justify-end gap-2">
+                  <button
+                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                    onClick={() => setNotification(false)}
+                  >
+                    Close
+                  </button>
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                    onClick={() => {
+                      router.push("/Notification");
+                      setNotification(false);
+                    }}
+                  >
+                    View Bookings
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Graphs Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            
             {/* Dynamic Pie Chart */}
             <div className="bg-white shadow-lg p-6 rounded-lg">
               <h3 className="text-center text-lg font-semibold mb-2">Booking Status</h3>
@@ -124,7 +178,6 @@ const Dashboard = () => {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-
           </div>
         </div>
       </div>

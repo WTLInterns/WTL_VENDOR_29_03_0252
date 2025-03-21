@@ -35,26 +35,25 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   return (
     <div
       className={`w-64 h-screen bg-white shadow-lg fixed left-0 top-0 z-40 border-r transform transition-transform duration-300 ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
+        isOpen ? "translate-x-0" : "-translate-x-full "
       } md:translate-x-0`} // Hide sidebar on mobile by default, show on desktop
     >
       <div className="px-6 py-5 text-gray-800 font-bold text-sm uppercase bg-gray-100 border-b">
-        {email ? email : "FRONTENDRH@GMAIL.COM"}{" "}
-        {/* Display email if available, else default email */}
+        {/* {email ? email : "FRONTENDRH@GMAIL.COM"}{" "} */}
       </div>
 
-      <nav className="mt-3">
+      <nav className="mt-8 dark:bg-black dark:text-white">
         <ul className="space-y-3 px-4">
           {/* Login or Show Email */}
           {vendor ? (
             // Show the vendor email if logged in
             <li
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
-              onClick={() => router.push("/Vendor")}
-            >
-              <FaUser className="text-lg" />
-              <span className="text-base font-medium">{email}</span>
-            </li>
+            className="flex items-center gap-3 px-4 py-3  rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+            // onClick={() => router.push("/Vendor")}
+          >
+            <FaUser className="text-lg" />
+            <span className="text-base font-medium">{email}</span>
+          </li>
           ) : (
             // Show "Login" option if no vendor exists
             <li
@@ -68,7 +67,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
           {/* Dashboard */}
           <li
-            className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+            className="flex items-center gap-3 px-4 py-3  rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
             onClick={() => router.push("/")}
           >
             <FaTachometerAlt className="text-lg" />
@@ -77,7 +76,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
           {/* Bookings */}
           <li
-            className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+            className="flex items-center gap-3 px-4 py-3  rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
             onClick={() => router.push("/Bookings")}
           >
             <FaCar className="text-lg" />
@@ -86,7 +85,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
           {/* Cabs */}
           <li
-            className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+            className="flex items-center gap-3 px-4 py-3  rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
             onClick={() => router.push("/Cabs")}
           >
             <FaCar className="text-lg" />
@@ -95,7 +94,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
           {/* Drivers */}
           <li
-            className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
             onClick={() => router.push("/Drivers")}
           >
             <FaUserFriends className="text-lg" />
@@ -104,7 +103,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
           {/* Complaints */}
           <li
-            className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+            className="flex items-center gap-3 px-4 py-3  rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
             onClick={() => router.push("/Complaints")}
           >
             <FaExclamationTriangle className="text-lg" />
@@ -113,16 +112,24 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
           {/* Payments */}
           <li
-            className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+            className="flex items-center gap-3 px-4 py-3  rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
             onClick={() => router.push("/Payments")}
           >
             <FaCreditCard className="text-lg" />
             <span className="text-base font-medium">Payments</span>
           </li>
 
+          <li
+            className="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+            onClick={() => router.push("/Notification")}
+          >
+            <FaExclamationTriangle className="text-lg" />
+            <span className="text-base font-medium">Notification</span>
+          </li>
+
           {/* Vendor */}
           <li
-            className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
             onClick={() => router.push("/Vendor")}
           >
             <FaUser className="text-lg" />
@@ -132,7 +139,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           {/* Logout */}
           {vendor && (
             <li
-              className="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
+              className="flex items-center gap-3 px-4 py-3  rounded-lg cursor-pointer transition-all duration-300 hover:text-blue-600 hover:bg-blue-100"
               onClick={() => {
                 localStorage.removeItem("vendor");
                 router.push("/Login"); // Redirect to Login after logout
