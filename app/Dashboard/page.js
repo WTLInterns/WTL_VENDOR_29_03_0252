@@ -93,7 +93,7 @@ const Dashboard = () => {
         <div className="p-6">
           {/* Top Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white shadow-lg p-6 rounded-lg flex items-center">
+            <div className="bg-white shadow-lg p-6 rounded-lg flex items-center dark:text-black">
               <IndianRupee className="w-10 h-10 text-green-500 mr-4" />
               <div>
                 <p className="text-xl font-bold">₹ {totalRevenue} /-</p>
@@ -101,7 +101,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="bg-white shadow-lg p-6 rounded-lg flex items-center">
+            <div className="bg-white shadow-lg p-6 rounded-lg flex items-center  dark:text-black">
               <Car className="w-10 h-10 text-blue-500 mr-4" />
               <div>
                 <p className="text-xl font-bold">{bookings.length}</p>
@@ -109,7 +109,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="bg-white shadow-lg p-6 rounded-lg flex items-center">
+            <div className="bg-white shadow-lg p-6 rounded-lg flex items-center  dark:text-black">
               <CalendarCheck className="w-10 h-10 text-yellow-500 mr-4" />
               <div>
                 <p className="text-xl font-bold">{bookings.length}</p>
@@ -117,7 +117,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="bg-white shadow-lg p-6 rounded-lg flex items-center">
+            <div className="bg-white shadow-lg p-6 rounded-lg flex items-center  dark:text-black ">
               <Users className="w-10 h-10 text-purple-500 mr-4" />
               <div>
                 <p className="text-xl font-bold">{bookings.length}</p>

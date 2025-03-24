@@ -258,7 +258,7 @@ export default function page() {
       <div className={`flex-1 flex flex-col transition-all ${isSidebarOpen ? "" : ""}`}>
         <Navbar toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
 
-        <div className="flex-1 overflow-auto p-6 pt-16">
+        <div className="flex-1 overflow-auto p-6 pt-16 dark:bg-black">
           <Card className="mx-auto max-w-4xl shadow-lg">
             <div className="p-6">
               <h1 className="text-2xl font-bold text-center mb-6">Booking Details</h1>

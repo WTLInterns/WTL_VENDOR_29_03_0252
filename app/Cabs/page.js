@@ -164,20 +164,20 @@ const Cabs = () => {
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 md:ml-64 lg:ml-64 bg-gray-100 min-h-screen">
+      <div className="flex-1 md:ml-64 lg:ml-64 bg-gray-100 min-h-screen  dark:bg-black">
         {/* Navbar */}
         <Navbar />
 
         {/* Page Content */}
         <div className="p-6 pt-20">
           {/* Header Section */}
-          <div className="bg-gray-200 p-4 flex items-center justify-between rounded-lg shadow">
+          <div className="bg-gray-200 p-4 flex items-center justify-between rounded-lg shadow dark:bg-[#ECDCBF] dark:text-black">
             <h2 className="font-semibold text-lg flex items-center">
               <span className="mr-2">🚖</span> All Cabs Details
             </h2>
             <button
               onClick={toggleForm}
-              className="border p-3 rounded-md bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 text-white font-semibold transition duration-300 ease-in-out"
+              className="border p-3 rounded-md bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 text-white font-semibold transition duration-300 ease-in-out dark:bg-red-600 dark:text-white"
             >
               + Add Vehicle
             </button>
@@ -341,46 +341,46 @@ const Cabs = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
           {/* Card 1 */}
-          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
+          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md dark:bg-[#ded9df] dark:text-white">
             <img
               src="https://imgd.aeplcdn.com/600x337/n/cw/ec/159099/swift-exterior-right-front-three-quarter.jpeg?isig=0&q=80"
               alt="Hatchback"
               className="w-full h-45  mb-2 rounded-md md:object-contain"
             />
-            <h3 className="font-semibold text-lg">Hatchback</h3>
+            <h3 className="font-semibold text-lg dark:text-black">Hatchback</h3>
             <p className="text-sm text-gray-600">4+1 Seater</p>
           </div>
 
           {/* Card 2 */}
-          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
+          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md dark:bg-[#ded9df] dark:text-white">
             <img
               src="https://imgd.aeplcdn.com/600x337/n/cw/ec/127563/alto-k10-exterior-right-front-three-quarter-58.jpeg?isig=0&q=80"
               alt="Sedan"
               className="w-full h-45  mb-2 rounded-md md:object-contain"
             />
-            <h3 className="font-semibold text-lg">Sedan</h3>
+            <h3 className="font-semibold text-lg dark:text-black">Sedan</h3>
             <p className="text-sm text-gray-600">4+1 Seater</p>
           </div>
 
           {/* Card 3 */}
-          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
+          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md dark:bg-[#ded9df] dark:text-white">
             <img
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8l-ScnpWkIhxbxk_IbShOPh9opks7jOyLJQ&s"
               alt="SUV"
               className="w-full h-45  mb-2 rounded-md md:object-contain"
             />
-            <h3 className="font-semibold text-lg">SUV</h3>
+            <h3 className="font-semibold text-lg dark:text-black">SUV</h3>
             <p className="text-sm text-gray-600">6+1 Seater</p>
           </div>
 
           {/* Card 4 */}
-          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
+          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md dark:bg-[#ded9df] dark:text-white">
             <img
               src="https://imgd-ct.aeplcdn.com/664x374/n/cw/ec/41160/tigor-exterior-right-front-three-quarter-21.jpeg?isig=0&q=80"
               alt="SUV+"
               className="w-full h-45  mb-2 rounded-md md:object-contain"
             />
-            <h3 className="font-semibold text-lg">SUV+</h3>
+            <h3 className="font-semibold text-lg dark:text-black">SUV+</h3>
             <p className="text-sm text-gray-600">6+1 Seater</p>
           </div>
         </div>
@@ -408,21 +408,21 @@ const Cabs = () => {
         </div>
 
         {/* Table Section */}
-        <div className="mt-6 bg-white p-4 rounded-lg shadow-md">
+        <div className="mt-6 bg-white p-4 rounded-lg shadow-md dark:bg-slate-500">
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse border border-gray-300">
               <thead>
-                <tr className="bg-gray-200">
+                <tr className="bg-gray-200 dark:bg-black dark:text-white">
                   <th className="border border-gray-300 px-4 py-2 text-left">
                     Car Name
                   </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:bg-black dark:text-white">
                     Rc Number
                   </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:bg-black dark:text-white">
                     Vehicle NUmber
                   </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:bg-black dark:text-white">
                     View
                   </th>
                 </tr>
@@ -431,12 +431,12 @@ const Cabs = () => {
                 {cabs.length > 0 ? (
                   cabs.map((cab, index) => (
                     <tr key={index} className="border-b border-gray-300">
-                      <td className="border px-4 py-2">{cab.carName}</td>
-                      <td className="border px-4 py-2">{cab.rCNo}</td>
-                      <td className="border px-4 py-2">{cab.vehicleNo}</td>
-                      <td className="border px-4 py-2">
+                      <td className="border px-4 py-2 dark:bg-black dark:text-white">{cab.carName}</td>
+                      <td className="border px-4 py-2 dark:bg-black dark:text-white">{cab.rCNo}</td>
+                      <td className="border px-4 py-2 dark:bg-black dark:text-white">{cab.vehicleNo}</td>
+                      <td className="border px-4 py-2 dark:bg-black dark:text-white">
                         <button
-                          className="text-blue-500"
+                          className="text-blue-500 "
                           // onClick={() => route.push(`/Cabs/${cab.vendorCabId}`)}
                         >
                           <FaArrowRight />

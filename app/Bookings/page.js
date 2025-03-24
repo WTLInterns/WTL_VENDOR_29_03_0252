@@ -91,9 +91,9 @@ const page = () => {
       <div className="flex-1 flex flex-col overflow-hidden md:ml-64 lg:ml-64">
         <Navbar />
 
-        <div className="flex-1 overflow-auto p-6 pt-20 bg-gray-100">
+        <div className="flex-1 overflow-auto p-6 pt-20 bg-gray-100  dark:bg-black dark:text-white">
           {/* ✅ Buttons Section (Centered & Responsive) */}
-          <div className="flex flex-wrap justify-center gap-4 mb-2">
+          <div className="flex flex-wrap justify-center gap-4 mb-2  dark:bg-black dark:text-white">
             <div className="flex justify-center mb-4">
               <select
                 value={tripTypeFilter}
@@ -163,9 +163,9 @@ const page = () => {
             </div>
           ) : (
             // ✅ Responsive Table Section (Show fetched bookings data)
-            <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-              <table className="w-full border-collapse border border-gray-300">
-                <thead className="bg-gray-100">
+            <div className="overflow-x-auto bg-white shadow-lg rounded-lg  dark:bg-black dark:text-white">
+              <table className="w-full border-collapse border border-gray-300 ">
+                <thead className="bg-gray-100  dark:bg-black dark:text-white">
                   <tr className="border border-gray-300">
                     <th className="text-left font-bold p-3 border border-gray-300">
                       <Link

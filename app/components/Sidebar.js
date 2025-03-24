@@ -34,7 +34,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <div
-      className={`w-64 h-screen bg-white shadow-lg fixed left-0 top-0 z-40 border-r transform transition-transform duration-300 ${
+      className={`w-64 h-screen bg-white shadow-lg fixed left-0 top-0 z-40 border-r transform transition-transform duration-300  dark:bg-black dark:text-white ${
         isOpen ? "translate-x-0" : "-translate-x-full "
       } md:translate-x-0`} // Hide sidebar on mobile by default, show on desktop
     >
@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {/* {email ? email : "FRONTENDRH@GMAIL.COM"}{" "} */}
       </div>
 
-      <nav className="mt-8 dark:bg-black dark:text-white">
+      <nav className="mt-8">
         <ul className="space-y-3 px-4">
           {/* Login or Show Email */}
           {vendor ? (
