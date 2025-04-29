@@ -31,7 +31,7 @@ const page = () => {
     const fetchBookings = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/${vendorId}/vendorByBookings`
+          `https://api.worldtriplink.com/${vendorId}/vendorByBookings`
         );
         setBookings(response.data);
       } catch (error) {
@@ -69,7 +69,7 @@ const page = () => {
 
   const deleteBooking = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/delete/${id}`);
+      await axios.delete(`https://api.worldtriplink.com/delete/${id}`);
       alert("Booking deleted successfully!");
       setBookings(bookings.filter((booking) => booking.id !== id));
     } catch (error) {

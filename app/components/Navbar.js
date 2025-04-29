@@ -30,6 +30,7 @@ const Navbar = () => {
 
         {/* Right Side (Theme Toggle & Menu Icon) */}
         <div className="flex items-center space-x-6">
+          
           <button
             onClick={toggleTheme}
             className="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg"

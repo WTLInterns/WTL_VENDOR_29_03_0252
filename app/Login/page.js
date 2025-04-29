@@ -21,7 +21,7 @@ export default function Login() {
     try {
       // Make POST request to login API
       const response = await axios.post(
-        "http://localhost:8080/vendors/vendorLogin",
+        "https://api.worldtriplink.com/vendors/vendorLogin",
         {
           email,
           password,
@@ -46,57 +46,65 @@ export default function Login() {
     }
   };
 
+  // Render the login form
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      {/* Simple "Login Vendor" text */}
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 mt-[-40px]">
-        Login Vendor
-      </h2>
-
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-xl space-y-5 mt-[-20px]"
-      >
-        {/* Email Field */}
-        <div className="relative">
-          <div className="absolute inset-y-0 left-6 flex items-center text-gray-500">
-            <FaEnvelope className="mr-2" />
-            <span>Email</span>
-          </div>
-          <input
-            type="email"
-            className="w-full pl-32 pr-5 py-3 border border-gray-300 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} // Update email on change
-            required
-          />
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6">
+      {/* Larger Container with enhanced glass effect */}
+      <div className="w-full max-w-lg p-4 rounded-3xl  bg-gray-200 bg-opacity-60 backdrop-blur-md border-spacing-3 border-gray-700 shadow-2xl">
+        {/* Gradient Header with more spacing */}
+        <div className="text-center mb-6">
+          <h2 className=" text-4xl p-4  font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+            Login Vendor
+          </h2>
         </div>
 
-        {/* Password Field */}
-        <div className="relative">
-          <div className="absolute inset-y-0 left-6 flex items-center text-gray-500">
-            <FaLock className="mr-2" />
-            <span>Password</span>
+        <form onSubmit={handleSubmit} className="space-y-8 ">
+          {/* Email Field - enlarged */}
+          <div className="relative ">
+            <div className="absolute inset-y-0  left-5 flex items-center pl-3">
+              <FaEnvelope className="h-5 w-5 mr-3 text-gray-400" />
+              <span className="text-lg bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+                Email
+              </span>
+            </div>
+            <input
+              type="email"
+              className="w-full pl-32 pr-6 py-4 text-lg bg-gray-800 text-white border border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="Enter Your Mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
-          <input
-            type="password"
-            className="w-full pl-36 pr-5 py-3 border border-gray-300 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} // Update password on change
-            required
-          />
-        </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full py-4 text-white bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none rounded-full shadow-md"
-        >
-          Submit
-        </button>
-      </form>
+          {/* Password Field - enlarged */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-5 flex items-center pl-3">
+              <FaLock className="h-5 w-5 mr-3 text-gray-400" />
+              <span className="text-lg bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+                Password
+              </span>
+            </div>
+            <input
+              type="password"
+              className="w-full pl-40 pr-6  py-4 text-lg bg-gray-800 text-white border border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Submit Button - enlarged */}
+          <button
+            type="submit"
+            className="w-full py-4 text-xl font-semibold text-white bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 hover:from-purple-500 hover:via-pink-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-full shadow-xl transition-all duration-300"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

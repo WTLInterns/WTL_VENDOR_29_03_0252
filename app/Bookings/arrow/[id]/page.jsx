@@ -33,7 +33,7 @@ export default function page() {
   // Fetch booking details by ID
   const fetchBooking = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/booking/${params.id}`)
+      const response = await axios.get(`https://api.worldtriplink.com/booking/${params.id}`)
       setBooking(response.data)
     } catch (error) {
       console.error("Error fetching booking:", error)
@@ -45,7 +45,7 @@ export default function page() {
     const fetchDrivers = async () => {
       if (booking && vendorId) {
         try {
-          const response = await axios.get(`http://localhost:8080/${vendorId}/drivers`)
+          const response = await axios.get(`https://api.worldtriplink.com/${vendorId}/drivers`)
           setDrivers(response.data)
         } catch (error) {
           console.error("Error fetching drivers:", error)
@@ -61,7 +61,7 @@ export default function page() {
     const fetchCabs = async () => {
       if (vendorId) {
         try {
-          const response = await axios.get(`http://localhost:8080/${vendorId}/cabs`)
+          const response = await axios.get(`https://api.worldtriplink.com/${vendorId}/cabs`)
           setCabs(response.data)
         } catch (error) {
           console.error("Error fetching cabs:", error)
@@ -81,7 +81,7 @@ export default function page() {
 
   const handleUpdateStatus = async (newStatus) => {
     try {
-      const response = await axios.put(`http://localhost:8080/${params.id}/status`, { status: newStatus })
+      const response = await axios.put(`https://api.worldtriplink.com/${params.id}/status`, { status: newStatus })
       setBooking(response.data)
       Swal.fire({
         title: "Success!",
@@ -113,7 +113,7 @@ export default function page() {
   // Assign the driver to the booking
   const assignVendorDriver = async (vendorDriverId) => {
     try {
-      const response = await axios.put(`http://localhost:8080/${params.id}/assignVendorDriver/${vendorDriverId}`)
+      const response = await axios.put(`https://api.worldtriplink.com/${params.id}/assignVendorDriver/${vendorDriverId}`)
       Swal.fire({
         title: "Success!",
         text: "Driver assigned successfully!",
@@ -135,7 +135,7 @@ export default function page() {
   // Assign the cab to the booking
   const assignVendorCab = async (vendorCabId) => {
     try {
-      const response = await axios.put(`http://localhost:8080/${params.id}/assignVendorCab/${vendorCabId}`)
+      const response = await axios.put(`https://api.worldtriplink.com/${params.id}/assignVendorCab/${vendorCabId}`)
       Swal.fire({
         title: "Success!",
         text: "Cab assigned successfully!",
@@ -170,7 +170,7 @@ export default function page() {
       const currentTime = `${hours}:${minutes}`
 
       await axios.post(
-        `http://localhost:8080/penalty/${params.id}/${vendorId}`,
+        `https://api.worldtriplink.com/penalty/${params.id}/${vendorId}`,
         { amount: price, time: currentTime },
         { headers: { "Content-Type": "application/json" } },
       )

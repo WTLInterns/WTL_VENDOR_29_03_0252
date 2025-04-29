@@ -32,7 +32,7 @@ const Page = () => {
     const fetchBookingsByStatus = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/getStatus/${params.status}`
+          `https://api.worldtriplink.com/getStatus/${params.status}`
         );
         setBookings(response.data);
       } catch (error) {
