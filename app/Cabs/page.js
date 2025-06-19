@@ -91,7 +91,7 @@ const Cabs = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/addVendorCab/${vendorId}`,
+        `https://api.worldtriplink.com/addVendorCab/${vendorId}`,
         form,
         {
           headers: {

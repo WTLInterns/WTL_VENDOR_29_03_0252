@@ -99,7 +99,7 @@ const Drivers = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/addVendorDriver/${vendorId}`,
+        `https://api.worldtriplink.com/addVendorDriver/${vendorId}`,
         form,
         {
           headers: {
