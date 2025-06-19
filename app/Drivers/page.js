@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { FaArrowRight, FaPlus, FaTimes } from "react-icons/fa";
+import { FaArrowRight, FaPlus, FaTimes, FaSpinner } from "react-icons/fa";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import React from "react";
@@ -8,6 +8,7 @@ import axios from "axios"; // Import axios
 
 const Drivers = () => {
   const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // ✅ ADD: Loading state
   const [formData, setFormData] = useState({
     driverName: "",
     contactNo: "",
@@ -56,47 +57,17 @@ const Drivers = () => {
     }));
   };
 
+  // ✅ UPDATED: Handle submit with loading state
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // ✅ START: Set loading to true when submission starts
+    setIsLoading(true);
 
     const driverNameReges = /.+/;
     if (!driverNameReges.test(formData.driverName)) {
       alert("Driver name cannot be empty");
-      return;
-    }
-
-    const addressReges = /.+/;
-    if (!addressReges.test(formData.address)) {
-      alert("Address cannot be empty");
-      return;
-    }
-
-    const altContactNoRegex = /^[0-9]\d{10}$/;
-    if (!altContactNoRegex.test(formData.altContactNo)) {
-      alert("Contact no shoulde be greater than 9");
-      return;
-    }
-
-    const contactNoRegex = /^[0-9]\d{10}$/;
-    if (!contactNoRegex.test(formData.contactNo)) {
-      alert("Alternate Contact no shoulde be greater than 9");
-
-      return;
-    }
-
-    // // Validate Vehicle Number
-    // const vehicleNoRegex = /^[A-Z]{2}\s*[0-9]{2}\s*[A-Z]{1,2}\s*[0-9]{4}$/;
-    // if (!vehicleNoRegex.test(formData.vehicleNo)) {
-    //   alert(
-    //     "Please enter a valid Vehicle Number in Indian format (e.g., MH12AB1234)"
-    //   );
-    //   return;
-    // }
-
-    const dLNoRegex = /^[A-Z]{2}[0-9]{13}$/;
-    if (!dLNoRegex.test(formData.dLNo)) {
-      alert("Driver License are incorrect");
-
+      setIsLoading(false); // ✅ Stop loading on validation error
       return;
     }
 
@@ -128,7 +99,7 @@ const Drivers = () => {
 
     try {
       const response = await axios.post(
-        `https://api.worldtriplink.com/addVendorDriver/${vendorId}`,
+        `http://localhost:8080/addVendorDriver/${vendorId}`,
         form,
         {
           headers: {
@@ -137,10 +108,37 @@ const Drivers = () => {
         }
       );
 
-      alert("Vendor added successfully:", response.data);
+      // ✅ SUCCESS: Stop loading and show success message
+      alert("Driver added successfully!");
+      console.log("Response:", response.data);
       setShowForm(false);
+      
+      // ✅ OPTIONAL: Reset form data
+      setFormData({
+        driverName: "",
+        contactNo: "",
+        altContactNo: "",
+        address: "",
+        dLNo: "",
+        pvcNo: "",
+        emailId: "",
+        driverOtherDetails: "",
+        driverImage: null,
+        driverSelfie: null,
+        dLnoImage: null,
+        pvcImage: null,
+        driverDoc1Image: null,
+        driverDoc2Image: null,
+        driverDoc3Image: null,
+      });
+      
     } catch (error) {
-      console.error("Error adding vendor:", error);
+      // ✅ ERROR: Stop loading and show error message
+      console.error("Error adding driver:", error);
+      alert("Error adding driver. Please try again.");
+    } finally {
+      // ✅ FINALLY: Always stop loading regardless of success/error
+      setIsLoading(false);
     }
   };
 
@@ -195,10 +193,28 @@ const Drivers = () => {
             <form onSubmit={handleSubmit}>
               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-2 sm:p-4 z-50">
                 <div className="relative bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl max-h-[90vh] overflow-y-auto">
+                  
+                  {/* ✅ LOADING OVERLAY: Show spinner when loading */}
+                  {isLoading && (
+                    <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
+                      <div className="flex flex-col items-center">
+                        <FaSpinner className="animate-spin text-4xl text-blue-500 mb-2" />
+                        <span className="text-lg font-medium text-gray-700">Submitting...</span>
+                        <span className="text-sm text-gray-500">Please wait</span>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Close Button */}
                   <button
                     onClick={toggleForm}
-                    className="absolute top-2 right-2 text-gray-600 hover:text-red-600 text-xl"
+                    type="button"
+                    disabled={isLoading} // ✅ Disable close button when loading
+                    className={`absolute top-2 right-2 text-xl ${
+                      isLoading 
+                        ? 'text-gray-400 cursor-not-allowed' 
+                        : 'text-gray-600 hover:text-red-600'
+                    }`}
                   >
                     <FaTimes />
                   </button>
@@ -218,7 +234,10 @@ const Drivers = () => {
                         name="driverName"
                         value={formData.driverName}
                         onChange={handleInputChange}
-                        className="border p-2 w-full sm:w-2/3 rounded-md"
+                        disabled={isLoading} // ✅ Disable inputs when loading
+                        className={`border p-2 w-full sm:w-2/3 rounded-md ${
+                          isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                        }`}
                         placeholder="Enter Driver Name"
                         required
                       />
@@ -234,7 +253,10 @@ const Drivers = () => {
                         name="contactNo"
                         value={formData.contactNo}
                         onChange={handleInputChange}
-                        className="border p-2 w-full sm:w-2/3 rounded-md"
+                        disabled={isLoading}
+                        className={`border p-2 w-full sm:w-2/3 rounded-md ${
+                          isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                        }`}
                         placeholder="Enter Contact No."
                         required
                       />
@@ -250,9 +272,11 @@ const Drivers = () => {
                         name="altContactNo"
                         value={formData.altContactNo}
                         onChange={handleInputChange}
-                        className="border p-2 w-full sm:w-2/3 rounded-md"
+                        disabled={isLoading}
+                        className={`border p-2 w-full sm:w-2/3 rounded-md ${
+                          isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                        }`}
                         placeholder="Enter Alternate Contact No."
-                        required
                       />
                     </div>
 
@@ -266,9 +290,11 @@ const Drivers = () => {
                         name="emailId"
                         value={formData.emailId}
                         onChange={handleInputChange}
-                        className="border p-2 w-full sm:w-2/3 rounded-md"
+                        disabled={isLoading}
+                        className={`border p-2 w-full sm:w-2/3 rounded-md ${
+                          isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                        }`}
                         placeholder="Enter Email Id"
-                        required
                       />
                     </div>
 
@@ -282,9 +308,11 @@ const Drivers = () => {
                         name="address"
                         value={formData.address}
                         onChange={handleInputChange}
-                        className="border p-2 w-full sm:w-2/3 rounded-md"
+                        disabled={isLoading}
+                        className={`border p-2 w-full sm:w-2/3 rounded-md ${
+                          isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                        }`}
                         placeholder="Enter Address"
-                        required
                       />
                     </div>
 
@@ -298,15 +326,19 @@ const Drivers = () => {
                           type="file"
                           name="driverImage"
                           onChange={handleFileChange}
-                          className="border p-2 w-full rounded-md"
-                          required
+                          disabled={isLoading}
+                          className={`border p-2 w-full rounded-md ${
+                            isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
                         />
                         <input
                           type="file"
                           name="driverSelfie"
                           onChange={handleFileChange}
-                          className="border p-2 w-full rounded-md"
-                          required
+                          disabled={isLoading}
+                          className={`border p-2 w-full rounded-md ${
+                            isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
                         />
                       </div>
                     </div>
@@ -322,7 +354,10 @@ const Drivers = () => {
                           name="dLNo"
                           value={formData.dLNo}
                           onChange={handleInputChange}
-                          className="border p-2 rounded-md"
+                          disabled={isLoading}
+                          className={`border p-2 rounded-md ${
+                            isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
                           placeholder="Enter DL No."
                           required
                         />
@@ -330,8 +365,10 @@ const Drivers = () => {
                           type="file"
                           name="dLnoImage"
                           onChange={handleFileChange}
-                          className="border p-2 rounded-md"
-                          required
+                          disabled={isLoading}
+                          className={`border p-2 rounded-md ${
+                            isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
                         />
                       </div>
                     </div>
@@ -347,22 +384,26 @@ const Drivers = () => {
                           name="pvcNo"
                           value={formData.pvcNo}
                           onChange={handleInputChange}
-                          className="border p-2 rounded-md"
+                          disabled={isLoading}
+                          className={`border p-2 rounded-md ${
+                            isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
                           placeholder="Enter PVC No."
-                          required
                         />
                         <input
                           type="file"
                           name="pvcImage"
                           onChange={handleFileChange}
-                          className="border p-2 rounded-md"
-                          required
+                          disabled={isLoading}
+                          className={`border p-2 rounded-md ${
+                            isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
                         />
                       </div>
                     </div>
 
                     {/* Additional Documents */}
-                    {["Driver&apos;s Doc 1", "Driver&apos;s Doc 2", "Driver&apos;s Doc 3"].map(
+                    {["Driver Doc 1", "Driver Doc 2", "Driver Doc 3"].map(
                       (label, index) => (
                         <div className="flex flex-col sm:flex-row items-center" key={index}>
                           <label className="w-full sm:w-1/3 mb-2 sm:mb-0">
@@ -372,8 +413,10 @@ const Drivers = () => {
                             type="file"
                             name={`driverDoc${index + 1}Image`}
                             onChange={handleFileChange}
-                            className="border p-2 w-full sm:w-2/3 rounded-md"
-                            required
+                            disabled={isLoading}
+                            className={`border p-2 w-full sm:w-2/3 rounded-md ${
+                              isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                            }`}
                           />
                         </div>
                       )
@@ -388,20 +431,34 @@ const Drivers = () => {
                         name="driverOtherDetails"
                         value={formData.driverOtherDetails}
                         onChange={handleInputChange}
-                        className="border p-2 w-full sm:w-2/3 rounded-md"
+                        disabled={isLoading}
+                        className={`border p-2 w-full sm:w-2/3 rounded-md ${
+                          isLoading ? 'bg-gray-100 cursor-not-allowed' : ''
+                        }`}
                         placeholder="Enter additional details"
-                        required
                       />
                     </div>
                   </div>
 
-                  {/* Submit Button */}
+                  {/* ✅ UPDATED: Submit Button with loading state */}
                   <div className="mt-6">
                     <button
                       type="submit"
-                      className="w-full bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700"
+                      disabled={isLoading}
+                      className={`w-full px-6 py-2 rounded-md font-medium transition duration-200 ${
+                        isLoading
+                          ? 'bg-gray-400 cursor-not-allowed text-gray-600'
+                          : 'bg-blue-500 hover:bg-blue-700 text-white'
+                      }`}
                     >
-                      Submit
+                      {isLoading ? (
+                        <div className="flex items-center justify-center">
+                          <FaSpinner className="animate-spin mr-2" />
+                          Submitting...
+                        </div>
+                      ) : (
+                        'Submit'
+                      )}
                     </button>
                   </div>
                 </div>
