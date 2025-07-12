@@ -503,6 +503,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               {[
                 { icon: <FaTachometerAlt />, label: "Dashboard", path: "/", color: "from-indigo-500 to-purple-500", textColor: "text-indigo-700 dark:text-indigo-400" },
                 { icon: <FaCar />, label: "Bookings", path: "/Bookings", color: "from-blue-500 to-cyan-500", textColor: "text-blue-700 dark:text-blue-400" },
+                                { icon: <FaCar />, label: "ETS Bookings", path: "/ETS", color: "from-blue-500 to-cyan-500", textColor: "text-blue-700 dark:text-blue-400" },
+,
                 { icon: <FaCar />, label: "Cabs", path: "/Cabs", color: "from-teal-500 to-emerald-500", textColor: "text-teal-700 dark:text-teal-400" },
                 { icon: <FaUserFriends />, label: "Drivers", path: "/Drivers", color: "from-amber-500 to-yellow-500", textColor: "text-amber-700 dark:text-amber-400" },
                 { icon: <FaExclamationTriangle />, label: "Complaints", path: "/Complaints", color: "from-red-500 to-pink-500", textColor: "text-red-700 dark:text-red-400" },
